@@ -102,7 +102,9 @@ static int fake_rtc_probe(struct platform_device *pdev)
 	struct rtc_device *rtc;
 
 	if (!time) {
+#ifdef MODULE
 		printk(MOD_NOTICE "missing 'time' parameter\n");
+#endif
 		return -ENODEV;
 	}
 
