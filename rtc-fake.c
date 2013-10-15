@@ -101,13 +101,6 @@ static int fake_rtc_probe(struct platform_device *pdev)
 {
 	struct rtc_device *rtc;
 
-	if (!time) {
-#ifdef MODULE
-		printk(MOD_NOTICE "missing 'time' parameter\n");
-#endif
-		return -ENODEV;
-	}
-
 	get_uptime(&begtime);
 
 	rtc = rtc_device_register(pdev->name, &pdev->dev, &fake_rtc_ops,
@@ -141,6 +134,13 @@ static struct platform_driver fake_rtc_drv = {
 static int __init fake_rtc_init(void)
 {
 	int err;
+
+	if (!time) {
+#ifdef MODULE
+		printk(MOD_NOTICE "missing 'time' parameter\n");
+#endif
+		return -EINVAL;
+	}
 
 	if ((err = platform_driver_register(&fake_rtc_drv))) {
 		printk(MOD_INFO "platform_register_driver failed; errno=%d\n", err);
